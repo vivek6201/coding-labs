@@ -1,0 +1,19 @@
+{
+  "name": "@repo/lib",
+  "version": "1.0.0",
+  "private": true,
+  "description": "",
+  "main": "index.js",
+  "exports": {
+    "./src/*": "./src/*.ts",
+    "./src/hooks/*": "./src/hooks/*.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.645.0",
+    "dotenv": "^16.4.5",
+    "zod": "^3.23.8"
+  }
+}
