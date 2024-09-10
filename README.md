@@ -9,8 +9,8 @@ This is a platgorm for users to code online just like replit. This platform supp
 - NodeJS WebSocket (RUNNER)
 - Shadcn 
 - AWS S3 (for Storing Data)
-- Docker and Kubernetes for Runner on demand conatiner
-
+- Docker and Kubernetes for Runner on demand containers
+  
 ## How to setup locally?
 
 - Step1: Fork and clone the repo.
