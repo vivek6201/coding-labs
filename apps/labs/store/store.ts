@@ -27,5 +27,5 @@ export const bootingContainerAtom = atom<boolean>({
 });
 export const loadingDataAtom = atom<boolean>({
   key: "loadingDataAtom",
-  default: true,
+  default: false,
 });

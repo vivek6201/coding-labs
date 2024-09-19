@@ -10,7 +10,8 @@ export interface CustomWebSocket extends WebSocket {
 }
 
 async function emitRootContent(ws: CustomWebSocket) {
-  const data = await fetchDir("/workspace", "");
+  const data = await fetchDir(process.env.HOME ?? "", "");
+
   if (Array.isArray(data)) {
     ws.send(
       JSON.stringify({
@@ -25,36 +26,38 @@ async function emitRootContent(ws: CustomWebSocket) {
 
 const wss = new WebSocketServer({ port: Number(process.env.PORT) || 4000 });
 wss.on("connection", async function connection(ws: CustomWebSocket, req) {
-  console.log("connection established");
-  ws.on("error", console.error);
+  try {
+    ws.on("error", (err) => console.error("error is: ", err));
 
-  const host = req.headers.host;
-  const labSlug = host?.split(".")[0];
-  ws.id = uuidv4();
+    const host = req.headers.host;
+    const labSlug = host?.split(".")[0];
+    ws.id = uuidv4();
 
-  // this will emit the root content to the frontend or else throw an error
-  emitRootContent(ws);
+    // this will emit the root content to the frontend or else throw an error
+    await emitRootContent(ws);
 
-  ws.on("message", function message(data, isBinary) {
-    
-    let message: {
-      type: string;
-      data: any;
-    } | null = null;
-    try {
-      message = JSON.parse(data.toString());
-    } catch (error) {
-      console.error("Error parsing message:", error);
-    } 
+    ws.on("message", function message(data, isBinary) {
+      let message: {
+        type: string;
+        data: any;
+      } | null = null;
 
-    if (message) {
-      performActions(message, ws, labSlug);
-    }
-  });
+      try {
+        message = JSON.parse(data.toString());
+      } catch (error) {
+        console.error("Error parsing message:", error);
+      }
 
-  ws.on("close", () => {
+      if (message) {
+        performActions(message, ws, labSlug);
+      }
+    });
 
-    //set a setTimeout of 10 min, if user does come back then delete all containers
-    console.log("user disconnected");
-  });
-}); 
+    ws.on("close", () => {
+      //set a setTimeout of 10 min, if user does come back then delete all containers
+      console.log("user disconnected");
+    });
+  } catch (error) {
+    console.log({ error });
+  }
+});

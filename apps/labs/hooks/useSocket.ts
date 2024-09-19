@@ -9,6 +9,7 @@ import useSendSocketMessage from "./useSendSocketMessage";
 export default function useSocket(labSlug: string) {
   const [socket, setSocket] = useRecoilState(socketAtom);
   const pendingMessages = useRecoilValue(pendingMessagesAtom);
+  const sendSocketMessage = useSendSocketMessage();
 
   useEffect(() => {
     const newSocket = new WebSocket(
@@ -18,7 +19,7 @@ export default function useSocket(labSlug: string) {
     newSocket.onopen = () => {
       // Send any pending messages
       setSocket(newSocket);
-      
+
       newSocket.send(
         JSON.stringify({
           type: "requestTerminal",
@@ -28,7 +29,8 @@ export default function useSocket(labSlug: string) {
       while (pendingMessages.length > 0) {
         const message = pendingMessages.shift();
         if (message !== undefined) {
-          useSendSocketMessage(message);
+          if (!sendSocketMessage) return;
+          sendSocketMessage(message);
         }
       }
     };

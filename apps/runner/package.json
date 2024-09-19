@@ -8,7 +8,7 @@
     "dev": "tsup --watch --onSuccess \"node dist/index.js\"",
     "build": "tsup --minify",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint --ext .ts src",
+    "lint": "eslint -c src",
     "lint:fix": "eslint --ext .ts src --fix"
   },
   "keywords": [],

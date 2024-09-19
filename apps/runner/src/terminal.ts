@@ -10,7 +10,7 @@ export class TerminalManager {
   private static _instance: TerminalManager;
 
   private constructor() {
-    this.shell = platform() === "win32" ? "powershell.exe" : "bash";
+    this.shell = platform() === "win32" ? "powershell.exe" : "/bin/sh";
     this.sessions = new Map();
   }
 
@@ -29,9 +29,12 @@ export class TerminalManager {
     const termProcess = spawn(this.shell, [], {
       cols: 80,
       rows: 30,
-      cwd: "/workspace",
+      cwd: `${process.env.HOME}`,
+      env: process.env,
       name: "xterm",
     });
+
+    console.log({ env: process.env });
 
     this.sessions.set(sessionId, {
       terminal: termProcess,
@@ -40,7 +43,6 @@ export class TerminalManager {
 
     termProcess.onData((data) => {
       if (data) {
-        console.log("Data from terminal:", data);
         onData(data, termProcess.pid);
       } else {
         console.error("Received undefined data from terminal process");

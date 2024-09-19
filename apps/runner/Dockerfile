@@ -4,6 +4,7 @@
 FROM node:18.20.4-alpine AS base
 RUN apk update && apk add libc6-compat
 RUN apk update && apk add make gcc g++ python3
+RUN apk add --no-cache bash
 
 # state 1
 FROM base AS development
@@ -32,8 +33,13 @@ RUN pnpm turbo build --filter=runner
 FROM base AS runner
 WORKDIR /app
 
+# Copy the application code to /app
 COPY --from=installer /app .
 
+# Set the HOME environment variable explicitly
+ENV HOME /workspace
+
+# Expose the port where the application runs
 EXPOSE 4000
 
-CMD node apps/runner/dist/index.js
+CMD ["node","apps/runner/dist/index.js"]

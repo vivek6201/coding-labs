@@ -49,9 +49,8 @@ spec:
           volumeMounts:
             - name: workspace-volume
               mountPath: /workspace
-          
----
 
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -70,7 +69,6 @@ spec:
       targetPort: 4000
 
 ---
-
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -80,24 +78,23 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: service_name.labs.letscodeofficial.tech
-    http:
-      paths:
-      - pathType: Prefix
-        path: "/"
-        backend:
-          service:
-            name: service_name
-            port: 
-              number: 4000
-  - host: service_name.lab-output.letscodeofficial.tech
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: service_name
-            port:
-              number: 3000 
-
+    - host: service_name.labs.letscodeofficial.tech
+      http:
+        paths:
+          - pathType: Prefix
+            path: "/"
+            backend:
+              service:
+                name: service_name
+                port:
+                  number: 4000
+    - host: service_name.lab-output.letscodeofficial.tech
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: service_name
+                port:
+                  number: 3000

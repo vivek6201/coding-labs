@@ -11,6 +11,7 @@ const term = new Terminal();
 const XTerminal = () => {
   const terminalRef = useRef<HTMLDivElement | null>(null);
   const socket = useRecoilValue(socketAtom);
+  const sendSocketMessage = useSendSocketMessage();
 
   useEffect(() => {
     if (!socket) return;
@@ -28,7 +29,8 @@ const XTerminal = () => {
     term.open(terminalRef.current);
 
     term.onKey((e) => {
-      useSendSocketMessage(
+      if (!sendSocketMessage) return;
+      sendSocketMessage(
         JSON.stringify({
           type: "terminalData",
           data: e.key,
