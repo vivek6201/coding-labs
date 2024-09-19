@@ -1,0 +1,5 @@
+{
+    "yaml.schemas": {
+        "kubernetes://schema/v1%40service": "file:///e%3A/Side%20Projects/CodingLabs/apps/labs/lib/orchestrator-service.yaml"
+    }
+}

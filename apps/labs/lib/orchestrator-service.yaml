@@ -1,0 +1,103 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: service_name
+  labels:
+    app: service_name
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: service_name
+  template:
+    metadata:
+      labels:
+        app: service_name
+    spec:
+      volumes:
+        - name: workspace-volume
+          emptyDir: {}
+      initContainers:
+        - name: copy-s3-resources
+          image: amazon/aws-cli
+          command: ["/bin/sh", "-c"]
+          args:
+            - aws s3 cp s3://coding-labs/labs/service_name/ /workspace/ --recursive  && echo "Resources copied from S3";
+          env:
+            - name: AWS_ACCESS_KEY_ID
+              value: aws-key
+            - name: AWS_SECRET_ACCESS_KEY
+              value: aws-secret
+            - name: AWS_DEFAULT_REGION
+              value: aws-region
+          volumeMounts:
+            - name: workspace-volume
+              mountPath: /workspace
+      containers:
+        - name: runner
+          image: vivek6201/labs-runner:latest
+          resources:
+            requests:
+              cpu: "1"
+              memory: "1Gi"
+            limits:
+              cpu: "1"
+              memory: "1Gi"
+          ports:
+            - containerPort: 3000
+            - containerPort: 4000
+          volumeMounts:
+            - name: workspace-volume
+              mountPath: /workspace
+          
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: service_name
+spec:
+  selector:
+    app: service_name
+  ports:
+    - protocol: TCP
+      name: user
+      port: 3000
+      targetPort: 3000
+    - protocol: TCP
+      name: ws
+      port: 4000
+      targetPort: 4000
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: service_name
+  labels:
+    name: service_name
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: service_name.labs.letscodeofficial.tech
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: service_name
+            port: 
+              number: 4000
+  - host: service_name.lab-output.letscodeofficial.tech
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: service_name
+            port:
+              number: 3000 
+

@@ -140,11 +140,7 @@ function CreateLab() {
               )}
             />
             <DialogFooter>
-              <Button
-                variant={"secondary"}
-                onClick={() => setOpen(false)}
-                type="button"
-              >
+              <Button onClick={() => setOpen(false)} type="button">
                 Close
               </Button>
               <Button

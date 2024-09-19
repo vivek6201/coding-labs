@@ -1,8 +1,11 @@
 "use client";
 import Editor from "@monaco-editor/react";
+import { useRecoilValue } from "recoil";
+import { socketAtom } from "../../store/store";
 
-export default function CodeEditor({socket}:{socket:WebSocket | null}) {
-  const handleEditorChange = (value:any, event:any) => {
+export default function CodeEditor() {
+  const socket = useRecoilValue(socketAtom);
+  const handleEditorChange = (value: any, event: any) => {
     console.log(value);
   };
 

@@ -1,25 +1,43 @@
 "use client";
 import React, { useEffect, useRef } from "react";
-import { XTerm } from "xterm-for-react";
+import { Terminal } from "@xterm/xterm";
+import "@xterm/xterm/css/xterm.css";
+import { useRecoilValue } from "recoil";
+import { socketAtom } from "../../store/store";
+import useSendSocketMessage from "../../hooks/useSendSocketMessage";
 
-const Terminal = ({ socket }: { socket: WebSocket | null }) => {
-  const terminalRef = useRef<XTerm>(null);
+const term = new Terminal();
 
-  const handleTermData = (value: string) => {
-    console.log(value);
-  };
+const XTerminal = () => {
+  const terminalRef = useRef<HTMLDivElement | null>(null);
+  const socket = useRecoilValue(socketAtom);
 
   useEffect(() => {
-    if (!terminalRef || !terminalRef.current || !socket) return;
-  }, [terminalRef]);
+    if (!socket) return;
+    socket.onmessage = (event) => {
+      const message = JSON.parse(event.data);
+      if (message.type === "terminal") term.write(message.data);
+    };
 
-  return (
-    <XTerm
-      ref={terminalRef}
-      className="min-h-[400px]"
-      onData={handleTermData}
-    />
-  );
+    return () => socket.close();
+  }, [socket]);
+
+  useEffect(() => {
+    if (!terminalRef.current || !socket) return;
+
+    term.open(terminalRef.current);
+
+    term.onKey((e) => {
+      useSendSocketMessage(
+        JSON.stringify({
+          type: "terminalData",
+          data: e.key,
+        })
+      );
+    });
+  }, [terminalRef, socket]);
+
+  return <div ref={terminalRef} />;
 };
 
-export default Terminal;
+export default XTerminal;

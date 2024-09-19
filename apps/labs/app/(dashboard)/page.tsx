@@ -1,5 +1,4 @@
 import CreateLab from "../../components/CreateLab";
-import Navbar from "../../components/Navbar";
 
 export default function Page(): JSX.Element {
   return (

@@ -5,8 +5,7 @@
   "description": "",
   "main": "index.js",
   "exports": {
-    "./src/*": "./src/*.ts",
-    "./src/hooks/*": "./src/hooks/*.ts"
+    "./src/*": "./src/*.ts"
   },
   "keywords": [],
   "author": "",

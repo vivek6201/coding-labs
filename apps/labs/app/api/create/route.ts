@@ -26,7 +26,7 @@ export const POST = async (req: NextRequest) => {
   const { slug, template } = data;
 
   try {
-    await S3Instance.copyS3Folder(`base/${template}`, `lab/${slug}`);
+    await S3Instance.copyS3Folder(`base/${template}`, `labs/${slug}`);
     return NextResponse.json(
       {
         success: true,

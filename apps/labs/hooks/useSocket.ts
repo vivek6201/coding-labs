@@ -1,19 +1,42 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { pendingMessagesAtom, socketAtom } from "../store/store";
+import useSendSocketMessage from "./useSendSocketMessage";
 
+//modify this and apply reconnecting logic on disconnect
 export default function useSocket(labSlug: string) {
-    const [socket, setSocket] = useState<WebSocket | null>(null);
+  const [socket, setSocket] = useRecoilState(socketAtom);
+  const pendingMessages = useRecoilValue(pendingMessagesAtom);
 
-    useEffect(() => {
-        // const newSocket = new WebSocket(`ws://${labSlug}.labs.letscodeofficial.tech`);
-        const newSocket = new WebSocket(`ws://localhost:3001`);
-        setSocket(newSocket);
+  useEffect(() => {
+    const newSocket = new WebSocket(
+      `ws://${labSlug}.labs.letscodeofficial.tech`
+    );
 
-        return () => {
-            newSocket.close();
-        };
-    }, [labSlug]);
+    newSocket.onopen = () => {
+      // Send any pending messages
+      setSocket(newSocket);
+      
+      newSocket.send(
+        JSON.stringify({
+          type: "requestTerminal",
+        })
+      );
 
-    return socket;
+      while (pendingMessages.length > 0) {
+        const message = pendingMessages.shift();
+        if (message !== undefined) {
+          useSendSocketMessage(message);
+        }
+      }
+    };
+
+    return () => {
+      newSocket.close();
+    };
+  }, [labSlug]);
+
+  return { socket, pendingMessages };
 }

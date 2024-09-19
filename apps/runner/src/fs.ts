@@ -1,7 +1,7 @@
 import { appendFile, readdir, readFile } from "fs";
 
 interface IFile {
-  type: "file" | "dir";
+  type: "File" | "Folder";
   name: string;
   path: string;
 }
@@ -17,7 +17,7 @@ export const fetchDir = async (
         resolve(
           files.map((file) => {
             return {
-              type: file.isDirectory() ? "dir" : "file",
+              type: file.isDirectory() ? "Folder" : "File",
               name: file.name,
               path: `${baseDir}/${file.name}`,
             };
