@@ -5,7 +5,6 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@ui/components/ui/resizable";
-import DocTree from "./Editor/DocTree";
 import CodeEditor from "./Editor/Editor";
 import Terminal from "./Editor/Terminal";
 import axios from "axios";
@@ -13,9 +12,12 @@ import useSocket from "../hooks/useSocket";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import {
   bootingContainerAtom,
+  currentContentAtom,
   fileStructureAtom,
   loadingDataAtom,
 } from "../store/store";
+import DocTree from "./Editor/DocTree/DocTree";
+import useTraverseChild from "../hooks/useTraverseChild";
 
 const LabClient = ({ slug }: { slug: string }) => {
   const [booting, setBooting] = useRecoilState(bootingContainerAtom);
@@ -56,8 +58,10 @@ const LabClient = ({ slug }: { slug: string }) => {
 
 const CodingPlayground = ({ slug }: { slug: string }) => {
   const { socket } = useSocket(slug);
-  const setFileStructure = useSetRecoilState(fileStructureAtom);
+  const [fileStructure, setFileStructure] = useRecoilState(fileStructureAtom);
+  const setCurrentContent = useSetRecoilState(currentContentAtom);
   const [dataLoading, setDataLoading] = useRecoilState(loadingDataAtom);
+  const { syncChildren, insertNode } = useTraverseChild();
 
   useEffect(() => {
     if (!socket) return;
@@ -69,28 +73,46 @@ const CodingPlayground = ({ slug }: { slug: string }) => {
           setDataLoading(false);
           setFileStructure(message.data);
           break;
-
         case "fetchDir":
-          setFileStructure((prev) => {
-            const allFiles = [...prev, ...message.data];
-            return allFiles.filter(
-              (file, index, self) =>
-                index === self.findIndex((f) => f.path === file.path)
-            );
-          });
+          if (message.data && fileStructure) {
+            const updatedTree = syncChildren(fileStructure, message.data);
+            if (updatedTree) {
+              setFileStructure(updatedTree);
+            }
+          }
+          break;
+        case "createDir":
+          if (message.data && fileStructure) {
+            const updatedTree = insertNode(fileStructure, message.data);
+            if (updatedTree) {
+              setFileStructure(updatedTree);
+            }
+          }
+          break;
+        case "createFile":
+          if (message.data && fileStructure) {
+            const updatedTree = insertNode(fileStructure, message.data);
+            if (updatedTree) {
+              setFileStructure(updatedTree);
+            }
+          }
           break;
         case "fetchContent":
-          setFileStructure(message.data);
+          setCurrentContent({
+            name: message.data.name,
+            content: message.data.content,
+            path: message.data.path,
+          });
           break;
       }
     });
-  }, [socket]);
+  }, [socket, fileStructure]);
 
   if (dataLoading) return <>loading</>;
 
   return (
     <ResizablePanelGroup direction="horizontal">
-      <ResizablePanel defaultSize={15}>
+      <ResizablePanel defaultSize={10} className="p-2 min-w-[200px]">
         <DocTree />
       </ResizablePanel>
       <ResizableHandle />

@@ -1,5 +1,5 @@
-import { appendFile, readdir, readFile } from "fs";
-
+import { appendFile, mkdir, readdir, readFile, writeFile } from "fs";
+import { resolve } from "path";
 interface IFile {
   type: "File" | "Folder";
   name: string;
@@ -38,7 +38,32 @@ export const fetchContent = async (file: string) => {
 
 export const saveFile = async (file: string, data: string) => {
   return new Promise<void>((resolve, reject) => {
-    appendFile(file, data, "utf-8", (err) => {
+    writeFile(file, data, "utf-8", (err) => {
+      if (err) reject(err);
+      else resolve();
+    });
+  });
+};
+
+export const createFolder = async (dirPath: string) => {
+  dirPath = resolve(`${process.env.HOME}/${dirPath}`);
+  return new Promise<void>((resolve, reject) => {
+    mkdir(dirPath, { recursive: true }, (err) => {
+      if (err) {
+        console.log(err);
+        reject(err);
+      } else {
+        console.log("folder created successfully");
+        resolve();
+      }
+    });
+  });
+};
+
+export const createFile = async (filepath: string) => {
+  filepath = resolve(`${process.env.HOME}/${filepath}`);
+  return new Promise<void>((resolve, reject) => {
+    writeFile(filepath, "", (err) => {
       if (err) reject(err);
       else resolve();
     });

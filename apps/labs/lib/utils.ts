@@ -24,7 +24,7 @@ export const readAndParseYaml = (filePath: string, slug: string) => {
     let docString = doc.toString();
 
     docString = docString.replace(
-      /service_name|aws-key|aws-secret|aws-region/g,
+      /service_name|aws-key|aws-secret|aws-region|aws-bucket-name/g,
       (match) => {
         switch (match) {
           case "service_name":
@@ -35,6 +35,8 @@ export const readAndParseYaml = (filePath: string, slug: string) => {
             return cred.secretKey;
           case "aws-region":
             return cred.region;
+          case "aws-bucket-name":
+            return cred.bucketName;
           default:
             return match;
         }

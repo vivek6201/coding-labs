@@ -1,9 +1,16 @@
 {
   "extends": "@repo/typescript-config/base.json",
   "compilerOptions": {
-    "lib": ["ES2015"],
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "target": "ES2020",
   },
-  "exclude": ["node_modules"],
-  "include": ["."]
+  "exclude": ["node_modules", "dist"],
+  "references": [
+    { "path": "../../packages/lib" }
+  ],
+  "include": [
+    "src/**/*" // Make sure all source files are included
+  ],
 }

@@ -93,4 +93,18 @@ export class S3Manager {
       console.error(error);
     }
   }
+
+  public async saveToS3(key: string, filePath: string, content: string) {
+    try {
+      const params = {
+        Bucket: this.bucketName,
+        Key: `${key}${filePath}`,
+        Body: content,
+      };
+
+      await this.client.putObject(params);
+    } catch (error) {
+      console.error(error);
+    }
+  }
 }

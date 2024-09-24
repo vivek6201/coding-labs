@@ -2,10 +2,14 @@
   "name": "@repo/lib",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "description": "",
   "main": "index.js",
   "exports": {
     "./src/*": "./src/*.ts"
+  },
+  "scripts": {
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",
@@ -14,5 +18,10 @@
     "@aws-sdk/client-s3": "^3.645.0",
     "dotenv": "^16.4.5",
     "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@repo/typescript-config":"workspace:*",
+    "@repo/eslint-config":"workspace:*",
+    "typescript":"^5.5.4"
   }
 }

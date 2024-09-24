@@ -16,7 +16,12 @@ async function emitRootContent(ws: CustomWebSocket) {
     ws.send(
       JSON.stringify({
         type: "init",
-        data,
+        data:{
+          name: "root",
+          type: "Folder",
+          path: "/",
+          children: data
+        },
       })
     );
   } else {

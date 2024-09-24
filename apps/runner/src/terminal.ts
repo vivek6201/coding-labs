@@ -34,8 +34,6 @@ export class TerminalManager {
       name: "xterm",
     });
 
-    console.log({ env: process.env });
-
     this.sessions.set(sessionId, {
       terminal: termProcess,
       labId,

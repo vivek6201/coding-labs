@@ -1,25 +1,25 @@
 {
   "name": "runner",
   "version": "1.0.0",
-  "description": "",
+  "type": "module",
   "main": "index.js",
+  "description": "",
   "scripts": {
     "start": "node dist/index.js",
-    "dev": "tsup --watch --onSuccess \"node dist/index.js\"",
-    "build": "tsup --minify",
+    "build": "node esbuild.config.js",
+    "clean": "rm -rf dist",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint -c src",
-    "lint:fix": "eslint --ext .ts src --fix"
+    "lint": "eslint src/"
   },
-  "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@repo/lib": "workspace:*",
     "@types/uuid": "^10.0.0",
+    "esbuild": "^0.24.0",
+    "esbuild-register": "^3.6.0",
     "express": "^4.19.2",
     "node-pty": "^1.0.0",
-    "tsup": "8.2.4",
     "uuid": "^10.0.0",
     "ws": "^8.18.0"
   },
@@ -30,7 +30,10 @@
     "@types/node": "^22.5.0",
     "@types/ws": "^8.5.12",
     "dotenv": "^16.4.5",
+    "esbuild-node-externals": "^1.14.0",
+    "esbuild-plugin-tsc": "^0.4.0",
     "eslint": "^9.9.1",
+    "ts-node": "^10.9.2",
     "typescript": "^5.5.4"
   }
 }
