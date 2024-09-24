@@ -40,7 +40,8 @@ export const TreeChild = memo(
     paddingLevel?: number;
   }) => {
     const [expanded, setExpanded] = useState(false);
-    const setCurrentContent = useSetRecoilState(currentContentAtom);
+    const [currentContent, setCurrentContent] =
+      useRecoilState(currentContentAtom);
     const sendMessage = useSendSocketMessage();
     const [input, setInput] = useState<{
       isVisible: boolean;
@@ -147,7 +148,7 @@ export const TreeChild = memo(
       const extension = child.name.split(".").at(-1);
       return (
         <div
-          className={`flex items-center gap-2 py-1 select-none hover:bg-gray-700 rounded-sm cursor-pointer ${paddingClass}`}
+          className={`flex items-center gap-2 py-1 select-none hover:bg-gray-800 rounded-sm cursor-pointer ${paddingClass} ${currentContent?.path === child.path && "bg-gray-700"}`}
           onClick={handleFetchContent}
         >
           <FileIcon extension={extension} />
