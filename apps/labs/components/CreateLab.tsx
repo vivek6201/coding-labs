@@ -69,7 +69,7 @@ function CreateLab() {
         form.reset();
 
         console.log(res.data);
-        router.push(`coding/${values.slug}`);
+        router.push(`dashboard/coding/${values.slug}`);
       }
     } catch (err) {
       console.error(err);
@@ -140,7 +140,7 @@ function CreateLab() {
               )}
             />
             <DialogFooter>
-              <Button onClick={() => setOpen(false)} type="button">
+              <Button onClick={() => setOpen(false)} type="button" disabled={loading}>
                 Close
               </Button>
               <Button
@@ -148,7 +148,7 @@ function CreateLab() {
                 className="flex gap-2 items-center"
                 disabled={loading}
               >
-                {loading && <Loader />}
+                {loading && <Loader className="animate-spin"/>}
                 Create Lab
               </Button>
             </DialogFooter>

@@ -7,8 +7,9 @@ export default function Page(): JSX.Element {
         <p className="text-xl md:text-2xl font-bold ">Your Labs</p>
         <CreateLab />
       </div>
-      <div>
+      <div className="flex min-h-[400px] items-center justify-center">
         {/* here all you created labs will be displayed by fetching from the db */}
+        <p>No Labs Created</p>
       </div>
     </div>
   );

@@ -20,6 +20,9 @@ import DocTree from "./Editor/DocTree/DocTree";
 import useTraverseChild from "../hooks/useTraverseChild";
 import { Loader2 } from "lucide-react";
 import EditorPlaceholder from "./Editor/EditorPlaceholder";
+import { Button } from "@ui/components/button";
+import { useRouter } from "next/navigation";
+import { useToast } from "@ui/hooks/use-toast";
 
 const LabClient = ({ slug }: { slug: string }) => {
   const [booting, setBooting] = useRecoilState(bootingContainerAtom);
@@ -73,6 +76,27 @@ const CodingPlayground = ({ slug }: { slug: string }) => {
     useRecoilState(currentContentAtom);
   const [dataLoading, setDataLoading] = useRecoilState(loadingDataAtom);
   const { syncChildren, insertNode } = useTraverseChild();
+  const router = useRouter();
+  const { toast } = useToast();
+  const [exitLoader, setExitLoader] = useState(false);
+
+  const handleLab = async () => {
+    try {
+      setExitLoader(true);
+      const res = await axios.post("/api/stop", { slug });
+      if (res.status === 200) {
+        router.push("/dashboard");
+      }
+    } catch (error) {
+      console.error(error);
+      toast({
+        title: "something went wrong while exiting!",
+      });
+      router.push("/dashboard");
+    } finally {
+      setExitLoader(false);
+    }
+  };
 
   useEffect(() => {
     if (!socket) return;
@@ -131,16 +155,25 @@ const CodingPlayground = ({ slug }: { slug: string }) => {
 
   return (
     <ResizablePanelGroup direction="horizontal" className="h-">
-      <ResizablePanel defaultSize={15} className="p-2 min-w-[200px]">
+      <ResizablePanel
+        defaultSize={15}
+        className="p-2 min-w-[200px] h-full flex flex-col justify-between"
+      >
         <DocTree />
+        <Button
+          onClick={handleLab}
+          disabled={exitLoader}
+          className="flex items-center gap-2"
+        >
+          {exitLoader ? <Loader2 className="animate-spin" /> : null}
+          Exit Lab
+        </Button>
       </ResizablePanel>
       <ResizableHandle />
       <ResizablePanel defaultSize={85}>
         <ResizablePanelGroup direction="vertical">
           <ResizablePanel defaultSize={70}>
-            {
-              currentContent ? <CodeEditor /> : <EditorPlaceholder/>
-            } 
+            {currentContent ? <CodeEditor /> : <EditorPlaceholder />}
           </ResizablePanel>
           <ResizableHandle />
           <ResizablePanel defaultSize={30} className="overflow-y-auto">
