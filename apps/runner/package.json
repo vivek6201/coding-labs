@@ -16,6 +16,7 @@
   "dependencies": {
     "@repo/lib": "workspace:*",
     "@types/uuid": "^10.0.0",
+    "axios": "^1.7.7",
     "esbuild": "^0.24.0",
     "esbuild-register": "^3.6.0",
     "express": "^4.19.2",

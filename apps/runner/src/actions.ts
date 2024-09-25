@@ -1,4 +1,4 @@
-import { CustomWebSocket } from "./index";
+import { CustomWebSocket, destroyTimeout } from "./index";
 import {
   createFile,
   createFolder,
@@ -189,6 +189,21 @@ export async function performActions(
         );
       } catch (error) {
         console.error(error);
+      }
+    }
+
+    case "keepAlive": {
+      if (destroyTimeout !== null) {
+        clearTimeout(destroyTimeout);
+      } else {
+        ws.send(
+          JSON.stringify({
+            type: "alive",
+            data: {
+              message: "i am alive",
+            },
+          })
+        );
       }
     }
   }

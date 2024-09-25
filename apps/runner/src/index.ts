@@ -3,11 +3,14 @@ import { configDotenv } from "dotenv";
 import { performActions } from "./actions";
 import { fetchDir } from "./fs";
 import { v4 as uuidv4 } from "uuid";
+import axios from "axios";
 
 configDotenv();
 export interface CustomWebSocket extends WebSocket {
   id: string;
 }
+
+export let destroyTimeout: NodeJS.Timeout | null = null;
 
 async function emitRootContent(ws: CustomWebSocket) {
   const data = await fetchDir(process.env.HOME ?? "", "");
@@ -60,6 +63,12 @@ wss.on("connection", async function connection(ws: CustomWebSocket, req) {
 
     ws.on("close", () => {
       //set a setTimeout of 10 min, if user does come back then delete all containers
+
+      destroyTimeout = setTimeout(() => {
+        //call the backend api delete the pod
+        console.log("destroying resources..")
+      }, 600000)
+
       console.log("user disconnected");
     });
   } catch (error) {
