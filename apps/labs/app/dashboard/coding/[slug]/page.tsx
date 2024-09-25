@@ -3,7 +3,7 @@ import LabClient from "../../../../components/LabClient";
 
 const page = ({ params }: { params: { slug: string } }) => {
   return (
-    <div className="h-[calc(100vh-64px)]">
+    <div className="h-[calc(100vh-80px)]">
       <LabClient slug={params.slug} />
     </div>
   );

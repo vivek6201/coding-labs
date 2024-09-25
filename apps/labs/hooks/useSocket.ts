@@ -15,11 +15,11 @@ export default function useSocket(labSlug: string) {
 
   function connectWebSocket() {
     console.log("Attempting to connect to WebSocket...");
-    const newSocket = new WebSocket(`ws://${labSlug}.labs.letscodeofficial.tech`);
+    const newSocket = new WebSocket(
+      `ws://${labSlug}.labs.letscodeofficial.tech`
+    );
 
     newSocket.onopen = () => {
-      if(socketRef.current !== null) return;
-      
       console.log("WebSocket connection established");
       socketRef.current = newSocket; // Store the WebSocket instance in the ref
       setSocket(newSocket); // Update Recoil state
@@ -59,6 +59,7 @@ export default function useSocket(labSlug: string) {
   }
 
   useEffect(() => {
+    if (socketRef.current !== null) return;
     connectWebSocket();
 
     return () => {

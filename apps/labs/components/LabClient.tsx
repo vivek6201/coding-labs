@@ -18,6 +18,8 @@ import {
 } from "../store/store";
 import DocTree from "./Editor/DocTree/DocTree";
 import useTraverseChild from "../hooks/useTraverseChild";
+import { Loader2 } from "lucide-react";
+import EditorPlaceholder from "./Editor/EditorPlaceholder";
 
 const LabClient = ({ slug }: { slug: string }) => {
   const [booting, setBooting] = useRecoilState(bootingContainerAtom);
@@ -51,7 +53,15 @@ const LabClient = ({ slug }: { slug: string }) => {
     }
   }, []);
 
-  if (booting) return <div>Booting!</div>;
+  if (booting)
+    return (
+      <div className="absolute inset-0 backdrop-blur-sm flex items-center justify-center">
+        <div className="flex items-center gap-4">
+          <Loader2 className="animate-spin" />
+          <p>Booting...</p>
+        </div>
+      </div>
+    );
 
   return <CodingPlayground slug={slug} />;
 };
@@ -59,7 +69,8 @@ const LabClient = ({ slug }: { slug: string }) => {
 const CodingPlayground = ({ slug }: { slug: string }) => {
   const { socket } = useSocket(slug);
   const [fileStructure, setFileStructure] = useRecoilState(fileStructureAtom);
-  const setCurrentContent = useSetRecoilState(currentContentAtom);
+  const [currentContent, setCurrentContent] =
+    useRecoilState(currentContentAtom);
   const [dataLoading, setDataLoading] = useRecoilState(loadingDataAtom);
   const { syncChildren, insertNode } = useTraverseChild();
 
@@ -108,21 +119,31 @@ const CodingPlayground = ({ slug }: { slug: string }) => {
     });
   }, [socket, fileStructure]);
 
-  if (dataLoading) return <>loading</>;
+  if (dataLoading)
+    return (
+      <div className="absolute inset-0 backdrop-blur-sm flex items-center justify-center">
+        <div className="flex items-center gap-4">
+          <Loader2 className="animate-spin" />
+          <p>Loading...</p>
+        </div>
+      </div>
+    );
 
   return (
-    <ResizablePanelGroup direction="horizontal">
-      <ResizablePanel defaultSize={10} className="p-2 min-w-[200px]">
+    <ResizablePanelGroup direction="horizontal" className="h-">
+      <ResizablePanel defaultSize={15} className="p-2 min-w-[200px]">
         <DocTree />
       </ResizablePanel>
       <ResizableHandle />
       <ResizablePanel defaultSize={85}>
         <ResizablePanelGroup direction="vertical">
           <ResizablePanel defaultSize={70}>
-            <CodeEditor />
+            {
+              currentContent ? <CodeEditor /> : <EditorPlaceholder/>
+            } 
           </ResizablePanel>
           <ResizableHandle />
-          <ResizablePanel defaultSize={30}>
+          <ResizablePanel defaultSize={30} className="overflow-y-auto">
             <Terminal />
           </ResizablePanel>
         </ResizablePanelGroup>

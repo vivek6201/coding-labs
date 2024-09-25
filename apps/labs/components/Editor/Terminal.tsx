@@ -39,7 +39,7 @@ const XTerminal = () => {
     });
   }, [terminalRef, socket]);
 
-  return <div ref={terminalRef} />;
+  return <div ref={terminalRef} className="h-fit overflow-y-auto" />;
 };
 
 export default XTerminal;
