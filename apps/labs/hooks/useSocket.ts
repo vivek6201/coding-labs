@@ -16,7 +16,7 @@ export default function useSocket(labSlug: string) {
   function connectWebSocket() {
     console.log("Attempting to connect to WebSocket...");
     const newSocket = new WebSocket(
-      `ws://${labSlug}.labs.letscodeofficial.tech`
+      `ws://${labSlug}.lab-tunnel.letscodeofficial.tech`
     );
 
     newSocket.onopen = () => {

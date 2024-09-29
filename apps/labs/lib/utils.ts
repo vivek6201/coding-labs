@@ -3,6 +3,7 @@
 import { S3Manager } from "@repo/lib/src/s3-utils";
 import { readFileSync } from "fs";
 import { parse, parseAllDocuments } from "yaml";
+import path from "path";
 
 const cred = {
   accessKey: process.env.AWS_ACCESS_KEY ?? "",
@@ -18,8 +19,11 @@ export const S3Instance = S3Manager.getInstance(
   cred.region
 );
 
-export const readAndParseYaml = (filePath: string, slug: string) => {
+export const readAndParseYaml = (slug: string) => {
+  const filePath = path.join(process.cwd(), 'public/orchestrator-service.yaml');
   const fileContent = readFileSync(filePath, "utf-8");
+
+  // const fileContent = LABS_DATA;
   const docs = parseAllDocuments(fileContent).map((doc) => {
     let docString = doc.toString();
 

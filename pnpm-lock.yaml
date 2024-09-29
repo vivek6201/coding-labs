@@ -26,6 +26,9 @@ importers:
 
   apps/labs:
     dependencies:
+      '@aws-sdk/client-s3':
+        specifier: ^3.645.0
+        version: 3.645.0
       '@kubernetes/client-node':
         specifier: ^0.22.0
         version: 0.22.0
@@ -181,6 +184,49 @@ importers:
       ts-node:
         specifier: ^10.9.2
         version: 10.9.2(@types/node@22.5.0)(typescript@5.5.4)
+      typescript:
+        specifier: ^5.5.4
+        version: 5.5.4
+
+  apps/tunnel:
+    dependencies:
+      '@types/uuid':
+        specifier: ^10.0.0
+        version: 10.0.0
+      dotenv:
+        specifier: ^16.4.5
+        version: 16.4.5
+      esbuild:
+        specifier: ^0.24.0
+        version: 0.24.0
+      esbuild-node-externals:
+        specifier: ^1.14.0
+        version: 1.14.0(esbuild@0.24.0)
+      node-pty:
+        specifier: ^1.0.0
+        version: 1.0.0
+      uuid:
+        specifier: ^10.0.0
+        version: 10.0.0
+      ws:
+        specifier: ^8.18.0
+        version: 8.18.0
+    devDependencies:
+      '@repo/eslint-config':
+        specifier: workspace:*
+        version: link:../../packages/eslint-config
+      '@repo/typescript-config':
+        specifier: workspace:*
+        version: link:../../packages/typescript-config
+      '@types/node':
+        specifier: ^22.5.0
+        version: 22.5.0
+      '@types/ws':
+        specifier: ^8.5.12
+        version: 8.5.12
+      eslint:
+        specifier: ^9.9.1
+        version: 9.9.1(jiti@1.21.6)
       typescript:
         specifier: ^5.5.4
         version: 5.5.4

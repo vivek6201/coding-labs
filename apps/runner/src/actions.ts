@@ -6,10 +6,10 @@ import {
   fetchDir,
   saveFile,
 } from "./fs";
-import { TerminalManager } from "./terminal";
+// import { TerminalManager } from "./terminal";
 import { s3Utils } from "@repo/lib/src/index";
 
-const terminal = TerminalManager.getInstance();
+// const terminal = TerminalManager.getInstance();
 const cred = {
   accessKey: process.env.AWS_ACCESS_KEY ?? "",
   secretKey: process.env.AWS_SECRET_KEY ?? "",
@@ -67,56 +67,6 @@ export async function performActions(
           },
         })
       );
-      break;
-    }
-
-    case "requestTerminal": {
-      try {
-        terminal.createTermSession(ws.id, labSlug!, async (data, id) => {
-          try {
-            if (data) {
-              // Ensure data is valid before sending
-              ws.send(
-                JSON.stringify({
-                  type: "terminal",
-                  data,
-                })
-              );
-            } else {
-              console.error(
-                "Empty or undefined data received for WebSocket send"
-              );
-              ws.send(
-                JSON.stringify({
-                  type: "error",
-                  message: "Received empty or invalid terminal data",
-                })
-              );
-            }
-          } catch (error) {
-            console.error("Error sending terminal data:", error);
-            ws.send(
-              JSON.stringify({
-                type: "error",
-                message: "Error sending terminal data",
-              })
-            );
-          }
-        });
-      } catch (error) {
-        console.error("Error creating terminal session:", error);
-        ws.send(
-          JSON.stringify({
-            type: "error",
-            message: "Error creating terminal session",
-          })
-        );
-      }
-      break;
-    }
-
-    case "terminalData": {
-      terminal.writeData(ws.id, message.data);
       break;
     }
 

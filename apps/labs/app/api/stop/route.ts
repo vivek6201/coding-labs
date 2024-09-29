@@ -19,7 +19,6 @@ export const POST = async (req: NextRequest) => {
 
   try {
     const manifests = readAndParseYaml(
-      `${process.cwd()}/lib/orchestrator-service.yaml`,
       labSlug
     );
 

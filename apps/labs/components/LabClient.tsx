@@ -23,6 +23,7 @@ import EditorPlaceholder from "./Editor/EditorPlaceholder";
 import { Button } from "@ui/components/button";
 import { useRouter } from "next/navigation";
 import { useToast } from "@ui/hooks/use-toast";
+import OutputScreen from "./Editor/OutputScreen";
 
 const LabClient = ({ slug }: { slug: string }) => {
   const [booting, setBooting] = useRecoilState(bootingContainerAtom);
@@ -86,6 +87,7 @@ const CodingPlayground = ({ slug }: { slug: string }) => {
       const res = await axios.post("/api/stop", { slug });
       if (res.status === 200) {
         router.push("/dashboard");
+        window.location.reload();
       }
     } catch (error) {
       console.error(error);
@@ -173,7 +175,19 @@ const CodingPlayground = ({ slug }: { slug: string }) => {
       <ResizablePanel defaultSize={85}>
         <ResizablePanelGroup direction="vertical">
           <ResizablePanel defaultSize={70}>
-            {currentContent ? <CodeEditor /> : <EditorPlaceholder />}
+            {currentContent ? (
+              <ResizablePanelGroup direction="horizontal">
+                <ResizablePanel defaultSize={60}>
+                  <CodeEditor />
+                </ResizablePanel>
+                <ResizableHandle />
+                <ResizablePanel defaultSize={40}>
+                  <OutputScreen />
+                </ResizablePanel>
+              </ResizablePanelGroup>
+            ) : (
+              <EditorPlaceholder />
+            )}
           </ResizablePanel>
           <ResizableHandle />
           <ResizablePanel defaultSize={30} className="overflow-y-auto">

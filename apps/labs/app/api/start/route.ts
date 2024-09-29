@@ -8,7 +8,7 @@ import {
 import { readAndParseYaml } from "../../../lib/utils";
 
 export const POST = async (req: NextRequest) => {
-  const { slug:labSlug } = await req.json();
+  const { slug: labSlug } = await req.json();
   const namespace = "default";
 
   const kubeConfig = new KubeConfig();
@@ -17,9 +17,7 @@ export const POST = async (req: NextRequest) => {
   const appsV1Api = kubeConfig.makeApiClient(AppsV1Api);
   const networkingV1Api = kubeConfig.makeApiClient(NetworkingV1Api);
   try {
-    const manifests = readAndParseYaml(`${process.cwd()}/lib/orchestrator-service.yaml`,
-      labSlug
-    );
+    const manifests = readAndParseYaml(labSlug);
 
     for (const manifest of manifests) {
       switch (manifest.kind) {

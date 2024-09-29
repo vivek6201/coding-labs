@@ -39,10 +39,12 @@ export default function CodeEditor() {
   let language = currentContent?.name?.split(".").at(-1);
 
   switch (language) {
-    case "js" || "jsx":
+    case "js":
+    case "jsx":
       language = "javascript";
       break;
-    case "ts" || "tsx":
+    case "ts":
+    case "tsx":
       language = "typescript";
       break;
     case "py":
@@ -50,6 +52,7 @@ export default function CodeEditor() {
       break;
     case "json":
       language = "json";
+      break;
     default:
       language = "javascript";
   }

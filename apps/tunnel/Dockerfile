@@ -13,7 +13,7 @@ RUN npm install -g turbo
 FROM base AS development
 WORKDIR /app
 COPY . .
-RUN turbo prune runner --docker
+RUN turbo prune tunnel --docker
 
 # stage 2
 FROM base AS installer
@@ -22,7 +22,7 @@ WORKDIR /app
 COPY --from=development /app/out/json/ .
 RUN pnpm install
 COPY --from=development /app/out/full/ .
-RUN pnpm turbo build --filter=runner 
+RUN pnpm turbo build --filter=tunnel
 
 # stage 3
 FROM base AS runner
@@ -35,6 +35,6 @@ COPY --from=installer /app .
 ENV HOME /workspace
 
 # Expose the port where the application runs
-EXPOSE 4000
+EXPOSE 8080
 
-CMD ["node","apps/runner/dist/index.js"]
+CMD ["node","apps/tunnel/dist/index.js"]
